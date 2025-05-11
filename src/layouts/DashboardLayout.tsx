@@ -20,7 +20,6 @@ import {
   FileText, 
   Settings, 
   LogOut,
-  MessageSquare,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -35,7 +34,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const location = useLocation();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname.startsWith(path);
   
@@ -123,21 +121,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <button 
-                      onClick={() => setIsChatOpen(true)}
-                      className={cn(
-                        'flex items-center gap-2 w-full px-3 py-2 rounded-md transition-colors',
-                        'hover:bg-muted'
-                      )}
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                      {!collapsed && <span>Ask AI</span>}
-                    </button>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -165,8 +148,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           {children}
         </main>
       </div>
-
-      <ChatModal open={isChatOpen} onOpenChange={setIsChatOpen} />
     </div>
   );
 };

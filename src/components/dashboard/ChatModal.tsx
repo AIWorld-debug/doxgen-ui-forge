@@ -18,14 +18,17 @@ interface ChatMessage {
 interface ChatModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  projectName?: string; // Optional project name for project-specific chat
 }
 
-const ChatModal: React.FC<ChatModalProps> = ({ open, onOpenChange }) => {
+const ChatModal: React.FC<ChatModalProps> = ({ open, onOpenChange, projectName }) => {
   const { isPremium } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 1,
-      content: "Hello! I'm the DoxGen AI assistant. How can I help with your documentation today?",
+      content: projectName 
+        ? `Hello! I'm the DoxGen AI assistant. How can I help with your ${projectName} documentation?`
+        : "Hello! I'm the DoxGen AI assistant. How can I help with your documentation today?",
       sender: 'ai',
       timestamp: new Date(),
     },
@@ -48,10 +51,10 @@ const ChatModal: React.FC<ChatModalProps> = ({ open, onOpenChange }) => {
     // Mock AI response after a short delay
     setTimeout(() => {
       const aiResponses = [
-        "I've analyzed your documentation structure and found some areas for improvement in the README file.",
-        "The API documentation you're generating could use more examples. Would you like me to suggest some?",
-        "Your function documentation is well-structured. I've identified the key components and can help enhance the descriptions.",
-        "Based on your codebase, I recommend organizing the documentation into three main sections: Setup, API Reference, and Examples.",
+        `I've analyzed your ${projectName || ""} documentation structure and found some areas for improvement in the README file.`,
+        `The API documentation you're generating for ${projectName || "your project"} could use more examples. Would you like me to suggest some?`,
+        `Your function documentation is well-structured. I've identified the key components and can help enhance the descriptions.`,
+        `Based on your ${projectName || ""} codebase, I recommend organizing the documentation into three main sections: Setup, API Reference, and Examples.`,
       ];
       
       const aiMessage: ChatMessage = {
@@ -71,12 +74,14 @@ const ChatModal: React.FC<ChatModalProps> = ({ open, onOpenChange }) => {
       handleSendMessage();
     }
   };
+
+  const dialogTitle = projectName ? `AI Assistant - ${projectName}` : 'DoxGen AI Assistant';
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] h-[600px] flex flex-col p-0">
         <DialogHeader className="p-4 border-b">
-          <DialogTitle>DoxGen AI Assistant</DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription>
             Ask questions about your documentation or get help with your code.
           </DialogDescription>

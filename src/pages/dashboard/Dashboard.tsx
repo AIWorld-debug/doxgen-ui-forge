@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import ProjectCard from '@/components/dashboard/ProjectCard';
 import { useAuth } from '@/contexts/AuthContext';
 
-// Mock project data
+// Mock project data - expanded with more projects
 const mockProjects = [
   {
     id: '1',
@@ -42,6 +42,51 @@ const mockProjects = [
       {
         name: 'task-manager',
         description: 'Full-stack task management application',
+      },
+    ],
+  },
+  {
+    id: '4',
+    name: 'Portfolio Website',
+    updatedAt: 'Apr 10, 2025',
+    repos: [
+      {
+        name: 'portfolio-frontend',
+        description: 'Personal portfolio website',
+      },
+    ],
+  },
+  {
+    id: '5',
+    name: 'Weather Dashboard',
+    updatedAt: 'Mar 27, 2025',
+    repos: [
+      {
+        name: 'weather-dashboard',
+        description: 'React weather application with forecast data',
+      },
+      {
+        name: 'weather-api',
+        description: 'API to fetch and process weather data',
+      },
+    ],
+  },
+  {
+    id: '6',
+    name: 'Blog CMS',
+    updatedAt: 'Mar 15, 2025',
+    repos: [
+      {
+        name: 'blog-frontend',
+        description: 'Frontend for blog content management',
+      },
+      {
+        name: 'blog-backend',
+        description: 'Backend API for blog content',
+      },
+      {
+        name: 'content-delivery',
+        description: 'Content delivery service',
       },
     ],
   },
@@ -84,13 +129,13 @@ const Dashboard: React.FC = () => {
           </Button>
         </div>
       ) : (
-        <div className="grid gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
           
           {!isPremium && (
-            <div className="bg-muted/50 border border-dashed rounded-lg p-6 text-center">
+            <div className="bg-muted/50 border border-dashed rounded-lg p-6 text-center max-w-md">
               <h3 className="text-lg font-medium mb-2">Upgrade to Premium</h3>
               <p className="text-muted-foreground mb-4">
                 Create unlimited documentation projects with our premium plan.

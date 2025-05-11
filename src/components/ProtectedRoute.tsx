@@ -2,6 +2,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardLayout from "@/layouts/DashboardLayout";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -25,10 +26,13 @@ const ProtectedRoute = () => {
   }
 
   // If authenticated, render the child routes inside the dashboard layout
+  // Wrapped with SidebarProvider to fix the "useSidebar must be used within a SidebarProvider" error
   return (
-    <DashboardLayout>
-      <Outlet />
-    </DashboardLayout>
+    <SidebarProvider>
+      <DashboardLayout>
+        <Outlet />
+      </DashboardLayout>
+    </SidebarProvider>
   );
 };
 

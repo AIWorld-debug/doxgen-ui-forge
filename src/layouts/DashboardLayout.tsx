@@ -21,7 +21,6 @@ import {
   Settings, 
   LogOut,
   MessageSquare,
-  ChevronRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -34,7 +33,8 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname.startsWith(path);
@@ -55,7 +55,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           'border-r',
           collapsed ? 'w-16' : 'w-64'
         )}
-        collapsible
+        collapsible="icon"
       >
         <SidebarContent className="h-full flex flex-col">
           <div className={cn(

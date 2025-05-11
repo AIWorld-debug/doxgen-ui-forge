@@ -10,6 +10,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
+import Pricing from "./pages/Pricing";
 
 // Protected Pages
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/pricing" element={<Pricing />} />
             
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>

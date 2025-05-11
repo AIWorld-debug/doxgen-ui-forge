@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
+import { Github } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -30,6 +32,16 @@ const Login: React.FC = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleGithubLogin = () => {
+    // Simulate GitHub login
+    setIsSubmitting(true);
+    
+    setTimeout(() => {
+      login('github-user@example.com', 'password');
+      navigate('/dashboard');
+    }, 800);
   };
   
   return (
@@ -59,7 +71,25 @@ const Login: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit}>
+              <div className="grid gap-4">
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={handleGithubLogin}
+                  disabled={isSubmitting}
+                >
+                  <Github className="h-4 w-4 mr-2" />
+                  Sign in with GitHub
+                </Button>
+                
+                <div className="flex items-center">
+                  <Separator className="flex-1 mr-2" />
+                  <span className="text-xs text-muted-foreground">OR</span>
+                  <Separator className="flex-1 ml-2" />
+                </div>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="mt-4">
                 {error && (
                   <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md mb-4">
                     {error}

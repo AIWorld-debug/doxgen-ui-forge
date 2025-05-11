@@ -9,9 +9,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { Github } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Settings: React.FC = () => {
-  const { user, isPremium } = useAuth();
+  const { user, isPremium, connectGithub, disconnectGithub } = useAuth();
   const { toast } = useToast();
   
   const [name, setName] = useState(user?.name || '');
@@ -57,6 +59,14 @@ const Settings: React.FC = () => {
       title: 'Notification settings updated',
       description: 'Your notification preferences have been saved.'
     });
+  };
+
+  const handleGithubConnect = () => {
+    connectGithub();
+  };
+
+  const handleGithubDisconnect = () => {
+    disconnectGithub();
   };
   
   return (
@@ -110,8 +120,38 @@ const Settings: React.FC = () => {
                       {isPremium ? 'Premium' : 'Free'}
                     </Badge>
                     {!isPremium && (
-                      <Button variant="link" className="h-auto p-0">
-                        Upgrade to Premium
+                      <Button variant="link" className="h-auto p-0" asChild>
+                        <Link to="/pricing">Upgrade to Premium</Link>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-4 border-t">
+                  <Label>GitHub Integration</Label>
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-muted-foreground">
+                      {user?.githubConnected 
+                        ? 'Your GitHub account is connected' 
+                        : 'Connect your GitHub account to import repositories'}
+                    </div>
+                    {user?.githubConnected ? (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={handleGithubDisconnect}
+                      >
+                        <Github className="h-4 w-4 mr-2" />
+                        Disconnect GitHub
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={handleGithubConnect}
+                      >
+                        <Github className="h-4 w-4 mr-2" />
+                        Connect GitHub
                       </Button>
                     )}
                   </div>
@@ -262,7 +302,9 @@ const Settings: React.FC = () => {
                         <Button variant="outline" size="sm">Cancel Subscription</Button>
                       </div>
                     ) : (
-                      <Button>Upgrade to Premium</Button>
+                      <Button asChild>
+                        <Link to="/pricing">Upgrade to Premium</Link>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -303,6 +345,56 @@ const Settings: React.FC = () => {
                     </div>
                   </div>
                 )}
+
+                <div className="pt-4">
+                  <h3 className="text-lg font-medium mb-4">Plan Comparison</h3>
+                  
+                  <div className="grid gap-4 text-sm">
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="font-medium">Feature</div>
+                      <div className="font-medium">Free</div>
+                      <div className="font-medium">Premium</div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 border-t pt-2">
+                      <div>Documentation projects</div>
+                      <div>1 project</div>
+                      <div>Unlimited</div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 border-t pt-2">
+                      <div>GitHub integration</div>
+                      <div>✓</div>
+                      <div>✓</div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 border-t pt-2">
+                      <div>File upload support</div>
+                      <div>✗</div>
+                      <div>✓</div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 border-t pt-2">
+                      <div>AI assistant</div>
+                      <div>✗</div>
+                      <div>✓</div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 border-t pt-2">
+                      <div>Public links</div>
+                      <div>✗</div>
+                      <div>✓</div>
+                    </div>
+                  </div>
+                  
+                  {!isPremium && (
+                    <div className="mt-6">
+                      <Button asChild>
+                        <Link to="/pricing">View All Plan Details</Link>
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

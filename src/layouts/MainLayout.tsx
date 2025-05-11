@@ -16,7 +16,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, hideNav = false }) =>
   return (
     <div className="min-h-screen flex flex-col">
       {!hideNav && (
-        <header className="border-b">
+        <header className="border-b sticky top-0 bg-background z-10">
           <div className="container flex h-16 items-center justify-between">
             <Link to="/" className="flex items-center gap-2">
               <div className="h-8 w-8 bg-primary rounded flex items-center justify-center">
@@ -31,12 +31,28 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, hideNav = false }) =>
               <span className="font-semibold text-lg">DoxGen</span>
             </Link>
             
-            <nav className="hidden md:flex items-center gap-6">
-              <Link to="/#features" className="text-sm font-medium hover:text-primary transition-colors">
+            <nav className="flex items-center gap-6">
+              <Link 
+                to="/pricing" 
+                className={`text-sm font-medium ${
+                  location.pathname === '/pricing' 
+                    ? 'text-primary' 
+                    : 'text-foreground/70 hover:text-foreground transition-colors'
+                }`}
+              >
+                Pricing
+              </Link>
+              <Link 
+                to="/#features" 
+                className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+              >
                 Features
               </Link>
-              <Link to="/#pricing" className="text-sm font-medium hover:text-primary transition-colors">
-                Pricing
+              <Link 
+                to="/#" 
+                className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+              >
+                Documentation
               </Link>
             </nav>
             
@@ -84,7 +100,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, hideNav = false }) =>
                     </Link>
                   </li>
                   <li>
-                    <Link to="/#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Link to="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                       Pricing
                     </Link>
                   </li>

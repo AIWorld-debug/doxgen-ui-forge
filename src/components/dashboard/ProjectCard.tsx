@@ -1,132 +1,116 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import { Card, CardContent } from '@/components/ui/card';
-import { FolderOpen, GitBranch, ExternalLink, Copy, MessageSquare, Eye } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import React from 'react';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ExternalLink, Link2, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import ChatModal from '@/components/dashboard/ChatModal';
-import { useAuth } from '@/contexts/AuthContext';
+import ChatModal from './ChatModal';
 
-interface ProjectCardProps {
-  project: {
-    id: string;
-    name: string;
-    description?: string;
-    updatedAt: string;
-    repos: {
-      name: string;
-      description?: string;
-    }[];
-  };
-  className?: string;
+interface Repository {
+  name: string;
+  description: string;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, className }) => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
+interface Project {
+  id: string;
+  name: string;
+  updatedAt: string;
+  repos: Repository[];
+}
+
+interface ProjectCardProps {
+  project: Project;
+  isPremium: boolean;
+  onPremiumFeature: () => void;
+}
+
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, isPremium, onPremiumFeature }) => {
   const { toast } = useToast();
-  const { isPremium } = useAuth();
+  const [chatOpen, setChatOpen] = React.useState(false);
 
   const handleCopyLink = () => {
-    // Mock functionality to copy a public link
-    navigator.clipboard.writeText(`https://doxgen.app/public/${project.id}`);
+    if (!isPremium) {
+      onPremiumFeature();
+      return;
+    }
+    
+    // In a real app, this would copy an actual link
+    navigator.clipboard.writeText(`https://doxgen.app/docs/${project.id}`);
+    
     toast({
-      title: "Link copied",
+      title: "Link Copied",
       description: "Public link copied to clipboard",
     });
   };
 
   return (
-    <Card className={cn("overflow-hidden transition-all duration-200 hover:border-primary/30 max-w-md w-full", className)}>
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary/10 rounded-md p-2">
-              <FolderOpen className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <Link to={`/preview/${project.id}`} className="font-medium hover:text-primary transition-colors">
+    <Card className="h-full flex flex-col">
+      <CardContent className="pt-6 pb-2 flex-grow">
+        <div className="flex flex-col h-full">
+          <div>
+            <h3 className="font-semibold text-xl mb-2">
+              <Link to={`/preview/${project.id}`} className="hover:underline">
                 {project.name}
               </Link>
-              {project.description && (
-                <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
-              )}
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs">
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
               Updated {project.updatedAt}
-            </Badge>
+            </p>
           </div>
-        </div>
-        
-        {/* Repositories section - always visible now */}
-        <div className="mt-4 space-y-2">
-          <div className="text-sm text-muted-foreground mb-2">
-            {project.repos.length} {project.repos.length === 1 ? 'repository' : 'repositories'}
+
+          <div className="mt-2 mb-4">
+            <div className="text-sm font-medium mb-2">Repositories:</div>
+            <ul className="space-y-2">
+              {project.repos.map((repo, index) => (
+                <li key={index} className="text-sm">
+                  <div className="font-medium">{repo.name}</div>
+                  <div className="text-muted-foreground">{repo.description}</div>
+                </li>
+              ))}
+            </ul>
           </div>
-          
-          {project.repos.map((repo, index) => (
-            <div key={index} className="flex items-center gap-2 bg-muted/50 p-2 rounded text-sm">
-              <GitBranch className="h-4 w-4 text-muted-foreground" />
-              <div className="flex-1">
-                <div className="font-medium">{repo.name}</div>
-                {repo.description && (
-                  <div className="text-xs text-muted-foreground">{repo.description}</div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        <div className="mt-4 pt-4 border-t flex flex-wrap gap-2 items-center">
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="flex-grow" 
-            asChild
-          >
-            <Link to={`/preview/${project.id}`}>
-              <Eye className="h-4 w-4 mr-2" />
-              View Documentation
-            </Link>
-          </Button>
-          
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="flex-grow" 
-            onClick={handleCopyLink}
-            disabled={!isPremium}
-          >
-            <Copy className="h-4 w-4 mr-2" />
-            Copy Public Link
-            {!isPremium && <span className="ml-1 text-xs">(Premium)</span>}
-          </Button>
-          
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="flex-grow" 
-            onClick={() => setIsChatOpen(true)}
-            disabled={!isPremium}
-          >
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Ask AI
-            {!isPremium && <span className="ml-1 text-xs">(Premium)</span>}
-          </Button>
         </div>
       </CardContent>
       
-      {/* Project-specific chat modal */}
-      <ChatModal 
-        open={isChatOpen} 
-        onOpenChange={setIsChatOpen} 
-        projectName={project.name}
-      />
+      <CardFooter className="pt-2 pb-4 flex flex-wrap gap-2">
+        <Button size="sm" variant="outline" asChild>
+          <Link to={`/preview/${project.id}`}>
+            <ExternalLink className="h-4 w-4 mr-1" />
+            View Documentation
+          </Link>
+        </Button>
+        
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={handleCopyLink}
+          className={!isPremium ? "opacity-70" : ""}
+          disabled={!isPremium}
+        >
+          <Link2 className="h-4 w-4 mr-1" />
+          Copy Public Link
+        </Button>
+        
+        <Button 
+          size="sm" 
+          variant="outline"
+          onClick={() => isPremium ? setChatOpen(true) : onPremiumFeature()}
+          className={!isPremium ? "opacity-70" : ""}
+          disabled={!isPremium}
+        >
+          <MessageSquare className="h-4 w-4 mr-1" />
+          Ask AI
+        </Button>
+      </CardFooter>
+
+      {isPremium && (
+        <ChatModal 
+          open={chatOpen} 
+          onClose={() => setChatOpen(false)}
+          projectName={project.name} 
+        />
+      )}
     </Card>
   );
 };

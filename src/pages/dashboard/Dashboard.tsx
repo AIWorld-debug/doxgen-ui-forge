@@ -1,10 +1,11 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, ExternalLink, Link2, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProjectCard from '@/components/dashboard/ProjectCard';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 // Mock project data - expanded with more projects
 const mockProjects = [
@@ -94,8 +95,17 @@ const mockProjects = [
 
 const Dashboard: React.FC = () => {
   const { user, isPremium } = useAuth();
+  const { toast } = useToast();
   
   const projects = isPremium ? mockProjects : mockProjects.slice(0, 1);
+
+  const handlePremiumFeature = () => {
+    toast({
+      title: "Premium Feature",
+      description: "Please upgrade to Premium to access this feature.",
+      variant: "default"
+    });
+  };
   
   return (
     <div>
@@ -131,16 +141,25 @@ const Dashboard: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard 
+              key={project.id} 
+              project={project} 
+              isPremium={isPremium} 
+              onPremiumFeature={handlePremiumFeature}
+            />
           ))}
           
           {!isPremium && (
-            <div className="bg-muted/50 border border-dashed rounded-lg p-6 text-center max-w-md">
-              <h3 className="text-lg font-medium mb-2">Upgrade to Premium</h3>
-              <p className="text-muted-foreground mb-4">
-                Create unlimited documentation projects with our premium plan.
-              </p>
-              <Button variant="outline">Upgrade Now</Button>
+            <div className="bg-muted/50 border border-dashed rounded-lg p-6 flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg font-medium mb-2">Upgrade to Premium</h3>
+                <p className="text-muted-foreground mb-4">
+                  Create unlimited documentation projects with our premium plan.
+                </p>
+              </div>
+              <Button variant="outline" asChild>
+                <Link to="/pricing">Upgrade Now</Link>
+              </Button>
             </div>
           )}
         </div>

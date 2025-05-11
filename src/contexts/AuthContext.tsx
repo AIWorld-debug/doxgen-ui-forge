@@ -6,6 +6,7 @@ interface User {
   email: string;
   name: string;
   plan: 'free' | 'premium';
+  githubConnected?: boolean;
 }
 
 interface AuthContextType {
@@ -16,6 +17,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
+  connectGithub: () => void;
+  disconnectGithub: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,11 +45,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await new Promise(resolve => setTimeout(resolve, 800));
       
       // Mock user object - in a real app, this would come from the backend
-      const mockUser = {
+      const mockUser: User = {
         email,
         name: email.split('@')[0],
         plan: email.includes('premium') ? 'premium' : 'free',
-      } as User;
+        githubConnected: false
+      };
       
       localStorage.setItem('doxgen-user', JSON.stringify(mockUser));
       setUser(mockUser);
@@ -75,10 +79,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await new Promise(resolve => setTimeout(resolve, 800));
       
       // Mock user object
-      const mockUser = {
+      const mockUser: User = {
         email,
         name,
         plan: 'free',
+        githubConnected: false
       };
       
       localStorage.setItem('doxgen-user', JSON.stringify(mockUser));
@@ -109,6 +114,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       description: "You have been logged out successfully.",
     });
   };
+
+  const connectGithub = () => {
+    if (!user) return;
+    
+    // In a real app, this would redirect to GitHub OAuth
+    const updatedUser: User = {
+      ...user,
+      githubConnected: true
+    };
+    
+    setUser(updatedUser);
+    localStorage.setItem('doxgen-user', JSON.stringify(updatedUser));
+    
+    toast({
+      title: "GitHub Connected",
+      description: "Your GitHub account has been connected successfully.",
+    });
+  };
+
+  const disconnectGithub = () => {
+    if (!user) return;
+    
+    const updatedUser: User = {
+      ...user,
+      githubConnected: false
+    };
+    
+    setUser(updatedUser);
+    localStorage.setItem('doxgen-user', JSON.stringify(updatedUser));
+    
+    toast({
+      title: "GitHub Disconnected",
+      description: "Your GitHub account has been disconnected.",
+    });
+  };
   
   return (
     <AuthContext.Provider
@@ -120,6 +160,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         signup,
         logout,
+        connectGithub,
+        disconnectGithub
       }}
     >
       {children}

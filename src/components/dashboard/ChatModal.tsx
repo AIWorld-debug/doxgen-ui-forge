@@ -1,145 +1,102 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
-import { Send, Lock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/contexts/AuthContext';
-import PremiumFeature from '@/components/PremiumFeature';
+import { SendIcon } from 'lucide-react';
 
 interface ChatMessage {
-  id: number;
+  role: 'user' | 'assistant';
   content: string;
-  sender: 'user' | 'ai';
-  timestamp: Date;
 }
 
 interface ChatModalProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
-  projectName?: string; // Optional project name for project-specific chat
+  onClose: () => void;
+  projectName: string;
 }
 
-const ChatModal: React.FC<ChatModalProps> = ({ open, onOpenChange, projectName }) => {
-  const { isPremium } = useAuth();
+const ChatModal: React.FC<ChatModalProps> = ({ open, onClose, projectName }) => {
+  const [input, setInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 1,
-      content: projectName 
-        ? `Hello! I'm the DoxGen AI assistant. How can I help with your ${projectName} documentation?`
-        : "Hello! I'm the DoxGen AI assistant. How can I help with your documentation today?",
-      sender: 'ai',
-      timestamp: new Date(),
-    },
+    { role: 'assistant', content: `Hi! I'm your DoxGen assistant. How can I help you with your ${projectName} project documentation?` }
   ]);
-  const [newMessage, setNewMessage] = useState('');
   
-  const handleSendMessage = () => {
-    if (!newMessage.trim() || !isPremium) return;
+  const handleSend = () => {
+    if (!input.trim()) return;
     
-    const userMessage: ChatMessage = {
-      id: messages.length + 1,
-      content: newMessage,
-      sender: 'user',
-      timestamp: new Date(),
-    };
+    // Add user message
+    const newMessages = [...messages, { role: 'user', content: input }];
+    setMessages(newMessages);
+    setInput('');
     
-    setMessages(prev => [...prev, userMessage]);
-    setNewMessage('');
-    
-    // Mock AI response after a short delay
+    // Simulate AI response
     setTimeout(() => {
-      const aiResponses = [
-        `I've analyzed your ${projectName || ""} documentation structure and found some areas for improvement in the README file.`,
-        `The API documentation you're generating for ${projectName || "your project"} could use more examples. Would you like me to suggest some?`,
-        `Your function documentation is well-structured. I've identified the key components and can help enhance the descriptions.`,
-        `Based on your ${projectName || ""} codebase, I recommend organizing the documentation into three main sections: Setup, API Reference, and Examples.`,
-      ];
-      
-      const aiMessage: ChatMessage = {
-        id: messages.length + 2,
-        content: aiResponses[Math.floor(Math.random() * aiResponses.length)],
-        sender: 'ai',
-        timestamp: new Date(),
-      };
-      
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages([
+        ...newMessages, 
+        { 
+          role: 'assistant', 
+          content: `I'm analyzing your ${projectName} project. This is a simulated response. In the real app, this would provide actual information about your documentation.` 
+        }
+      ]);
     }, 1000);
   };
   
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSendMessage();
+      handleSend();
     }
   };
-
-  const dialogTitle = projectName ? `AI Assistant - ${projectName}` : 'DoxGen AI Assistant';
   
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] h-[600px] flex flex-col p-0">
-        <DialogHeader className="p-4 border-b">
-          <DialogTitle>{dialogTitle}</DialogTitle>
-          <DialogDescription>
-            Ask questions about your documentation or get help with your code.
-          </DialogDescription>
+    <Dialog open={open} onOpenChange={() => onClose()}>
+      <DialogContent className="sm:max-w-[500px] max-h-[80vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Chat with AI About {projectName}</DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${
-                  message.sender === 'user' ? 'justify-end' : 'justify-start'
+        <div className="flex-1 overflow-y-auto mb-4 space-y-4 min-h-[300px] max-h-[400px] py-4">
+          {messages.map((msg, i) => (
+            <div 
+              key={i} 
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div 
+                className={`max-w-[80%] p-3 rounded-lg ${
+                  msg.role === 'user' 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-muted'
                 }`}
               >
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.sender === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <p className="text-sm">{message.content}</p>
-                  <p className="text-xs opacity-70 mt-1">
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                </div>
+                {msg.content}
               </div>
-            ))}
-          </div>
-        </ScrollArea>
-        
-        {isPremium ? (
-          <div className="p-4 border-t flex gap-2">
-            <Input
-              placeholder="Type your message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="flex-1"
-            />
-            <Button size="icon" onClick={handleSendMessage} disabled={!newMessage.trim()}>
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        ) : (
-          <div className="p-4 border-t">
-            <div className="bg-muted rounded-lg p-4 flex items-center gap-3">
-              <Lock className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="font-medium">Premium Feature</p>
-                <p className="text-sm text-muted-foreground">
-                  Upgrade to premium to chat with our AI assistant.
-                </p>
-              </div>
-              <Button size="sm" className="ml-auto">Upgrade</Button>
             </div>
-          </div>
-        )}
+          ))}
+        </div>
+        
+        <div className="flex">
+          <Input
+            className="flex-1"
+            placeholder="Ask a question about your documentation..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <Button 
+            className="ml-2" 
+            size="icon" 
+            onClick={handleSend}
+            disabled={!input.trim()}
+          >
+            <SendIcon className="h-4 w-4" />
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

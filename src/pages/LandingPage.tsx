@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import MainLayout from '@/layouts/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle2, GitBranch, FileText, MessageSquare, Share2, Download, Github } from 'lucide-react';
+import { FileText, MessageSquare, Share2, Download, Github, GitBranch } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
   return (
@@ -119,126 +119,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4">
-        <div className="container">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-lg text-muted-foreground">
-              Choose the plan that's right for you
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-background rounded-lg p-8 border shadow-sm">
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold">Free</h3>
-                <div className="mt-4 mb-6">
-                  <span className="text-4xl font-bold">$0</span>
-                  <span className="text-muted-foreground">/month</span>
-                </div>
-                <p className="text-muted-foreground mb-6">
-                  Perfect for trying out DoxGen or for single projects.
-                </p>
-                <Button className="w-full mb-6" variant="outline" asChild>
-                  <Link to="/signup">Get Started</Link>
-                </Button>
-              </div>
-              
-              <ul className="space-y-3">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <span>1 documentation project</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <span>GitHub repo URL or GitHub integration</span>
-                </li>
-                <li className="flex items-start gap-2 text-muted-foreground">
-                  <span className="h-5 w-5 flex items-center justify-center relative mt-0.5">
-                    <span className="absolute h-0.5 w-3 bg-muted-foreground rotate-45"></span>
-                    <span className="absolute h-0.5 w-3 bg-muted-foreground -rotate-45"></span>
-                  </span>
-                  <span>No file upload support</span>
-                </li>
-                <li className="flex items-start gap-2 text-muted-foreground">
-                  <span className="h-5 w-5 flex items-center justify-center relative mt-0.5">
-                    <span className="absolute h-0.5 w-3 bg-muted-foreground rotate-45"></span>
-                    <span className="absolute h-0.5 w-3 bg-muted-foreground -rotate-45"></span>
-                  </span>
-                  <span>No AI chat assistant</span>
-                </li>
-                <li className="flex items-start gap-2 text-muted-foreground">
-                  <span className="h-5 w-5 flex items-center justify-center relative mt-0.5">
-                    <span className="absolute h-0.5 w-3 bg-muted-foreground rotate-45"></span>
-                    <span className="absolute h-0.5 w-3 bg-muted-foreground -rotate-45"></span>
-                  </span>
-                  <span>No downloadable documentation</span>
-                </li>
-                <li className="flex items-start gap-2 text-muted-foreground">
-                  <span className="h-5 w-5 flex items-center justify-center relative mt-0.5">
-                    <span className="absolute h-0.5 w-3 bg-muted-foreground rotate-45"></span>
-                    <span className="absolute h-0.5 w-3 bg-muted-foreground -rotate-45"></span>
-                  </span>
-                  <span>No public links</span>
-                </li>
-              </ul>
-            </div>
-            
-            <div className="bg-background rounded-lg p-8 border-2 border-primary shadow-sm relative">
-              <div className="absolute -top-3 right-6 bg-primary text-primary-foreground text-sm font-medium py-1 px-3 rounded-full">
-                Recommended
-              </div>
-              
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold">Premium</h3>
-                <div className="mt-4 mb-6">
-                  <span className="text-4xl font-bold">$19</span>
-                  <span className="text-muted-foreground">/month</span>
-                </div>
-                <p className="text-muted-foreground mb-6">
-                  For developers who need more power and flexibility.
-                </p>
-                <Button className="w-full mb-6" asChild>
-                  <Link to="/signup">Get Premium</Link>
-                </Button>
-              </div>
-              
-              <ul className="space-y-3">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <span>Unlimited documentation projects</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <span>GitHub repo URL or GitHub integration</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <span>File upload support (.zip)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <span>AI chat assistant</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <span>Download documentation as web app</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <span>Public shareable links</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <span>Multi-repository projects</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 bg-muted px-4">
         <div className="container max-w-4xl">
@@ -255,7 +135,7 @@ const LandingPage: React.FC = () => {
                   <Link to="/signup">Get Started for Free</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="bg-white/10 border-white/30 hover:bg-white/20" asChild>
-                  <Link to="#">View Demo</Link>
+                  <Link to="/pricing">View Pricing</Link>
                 </Button>
               </div>
             </div>

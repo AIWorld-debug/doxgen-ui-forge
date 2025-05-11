@@ -31,19 +31,18 @@ const ChatModal: React.FC<ChatModalProps> = ({ open, onClose, projectName }) => 
     if (!input.trim()) return;
     
     // Add user message
-    const newMessages = [...messages, { role: 'user', content: input }];
+    const userMessage: ChatMessage = { role: 'user', content: input };
+    const newMessages: ChatMessage[] = [...messages, userMessage];
     setMessages(newMessages);
     setInput('');
     
     // Simulate AI response
     setTimeout(() => {
-      setMessages([
-        ...newMessages, 
-        { 
-          role: 'assistant', 
-          content: `I'm analyzing your ${projectName} project. This is a simulated response. In the real app, this would provide actual information about your documentation.` 
-        }
-      ]);
+      const assistantMessage: ChatMessage = { 
+        role: 'assistant', 
+        content: `I'm analyzing your ${projectName} project. This is a simulated response. In the real app, this would provide actual information about your documentation.` 
+      };
+      setMessages([...newMessages, assistantMessage]);
     }, 1000);
   };
   
